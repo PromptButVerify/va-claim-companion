@@ -9,7 +9,7 @@ const CFG = {
   CLIENT_CLAIMS:  '0oa1bscwxlbnLr2Tk2p8',
   SCOPE_CLAIMS:   'claim.read',
 
-  // Appeals API
+  // Appeals AP
   AUTH_APPEALS:   'https://sandbox-api.va.gov/oauth2/appeals/v1/authorization',
   CLIENT_APPEALS: '0oa1bsd19oocoLYY32p8',
   SCOPE_APPEALS:  'appeals.read',
@@ -177,7 +177,8 @@ async function handleCallback() {
 
     await fetchData();
   } catch (err) {
-    S.error = err.message;
+    console.error('[handleCallback] error:', err.message, err);
+    S.error = err.message || 'Sign-in failed. Please try again.';
     render();
   }
 }
@@ -481,11 +482,15 @@ function render() {
 }
 
 function renderLogin() {
+  const errorHtml = S.error
+    ? `<div class="error-card" style="margin:16px 0;text-align:left"><div class="error-title">Sign-in error</div><div class="error-msg">${escHtml(S.error)}</div></div>`
+    : '';
   return `
     <div class="screen-login">
       <div class="login-mark"></div>
       <div class="login-title">VA Claim Companion</div>
       <div class="login-sub">Track your VA benefits claims and appeals in real time — built for mobile.</div>
+      ${errorHtml}
       <button class="btn btn-primary" id="btn-login-claims">Sign in with VA.gov</button>
       <div class="login-note">Uses your existing VA.gov login (ID.me or Login.gov). We never store your VA credentials.</div>
       <div class="sandbox-banner">Sandbox mode — use VA test accounts</div>
