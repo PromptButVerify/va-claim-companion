@@ -439,7 +439,7 @@ function renderInterpret(id) {
   const card = document.querySelector(`[data-claim-id="${id}"]`);
   if (!card) return;
 
-  const existingInterp  card.querySelector('.interpret');
+  const existingInterp = card.querySelector('.interpret');
   const tags = card.querySelector('.tags');
   const interp = S.interpretations[id];
   const loading = S.interpretLoading[id];
