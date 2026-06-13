@@ -61,7 +61,7 @@ function generateVerifier() {
   return b64url(arr.buffer);
 }
 
-acync function generateChallenge(verifier) {
+async function generateChallenge(verifier) {
   const hash = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(verifier));
   return b64url(hash);
 }
@@ -241,7 +241,7 @@ async function fetchData() {
   }
 }
 
-acync function interpretClaim(claim) {
+async function interpretClaim(claim) {
   const id = claim.id;
   if (S.interpretations[id] || S.interpretLoading[id]) return;
 
@@ -271,6 +271,7 @@ acync function interpretClaim(claim) {
     renderInterpret(id);
   }
 }
+
 // ─── Status mapping ─────────────────────────────────────────────────────────
 function getStatusClass(status) {
   if (!status) return 'pending';
@@ -327,7 +328,8 @@ function timeAgo(dt) {
   return `${Math.floor(diff / 86400)}d ago`;
 }
 
-// ─── SVG Icons ───────────────────────────────────────────────────────────────const ICONS = {
+// ─── SVG Icons ───────────────────────────────────────────────────────────────
+const ICONS = {
   claims: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M9 12h6M9 16h6M9 8h3M5 4h14a1 1 0 0 1 1 1v14a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V5a1 1 0 0 1 1-1z"/></svg>`,
   appeals: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M3 6h18M3 12h18M3 18h9"/><path d="M16 16l2 2 4-4"/></svg>`,
   settings: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" xmlns="http://www.w3.org/2000/svg"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>`,
@@ -337,7 +339,8 @@ function timeAgo(dt) {
   alert: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" xmlns="http://www.w3.org/2000/svg"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>`,
 };
 
-// ─── Render helpers ──────────────────────────────────────────────────────────function pill(status) {
+// ─── Render helpers ──────────────────────────────────────────────────────────
+function pill(status) {
   const cls = getStatusClass(status);
   const label = getStatusLabel(status);
   return `<span class="pill ${cls}"><span class="pill-dot"></span>${label}</span>`;
@@ -436,7 +439,7 @@ function renderInterpret(id) {
   const card = document.querySelector(`[data-claim-id="${id}"]`);
   if (!card) return;
 
-  const existingInterp = card.querySelector('.interpret');
+  const existingInterp  card.querySelector('.interpret');
   const tags = card.querySelector('.tags');
   const interp = S.interpretations[id];
   const loading = S.interpretLoading[id];
