@@ -174,20 +174,7 @@ async function handleCallback() {
     saveToken(api, data.access_token, data.expires_in || 3600);
     if (api === 'claims') {
       S.tokenClaims = data.access_token;
-      // Auto-chain: start Appeals OAuth immediately after Claims succeeds
-      if (!loadToken('appeals')) {
-        document.getElementById('app').innerHTML = `
-          <div class="screen-login">
-            <div class="login-mark"></div>
-            <div class="login-title">VA Claim Companion</div>
-            <div class="login-sub">One more step — connecting your appeals data...</div>
-            <div class="spinner" style="margin:32px auto"></div>
-          </div>`;
-        await new Promise(r => setTimeout(r, 800));
-        await startAuth('appeals');
-        return;
-      }
-    } else {
+      } else {
       S.tokenAppeals = data.access_token;
       S.appeals = []; // Mark appeals as connected; fetchData will populate with real data
     }
@@ -603,8 +590,8 @@ function renderAppeals() {
     return `<div class="empty">
       <div class="empty-icon">${ICONS.appeals}</div>
       <div class="empty-title">Appeals not connected</div>
-      <div class="empty-sub">Your claims loaded. Sign in to also view your VA appeals status.</div>
-      <button class="btn btn-primary" id="btn-connect-appeals" style="margin-top:20px;max-width:240px">Sign in for Appeals</button>
+      <div class="empty-sub">Your claims are loaded. Connect Appeals to see Board appeals separately.</div>
+      <button class="btn btn-primary" id="btn-connect-appeals" style="margin-top:20px;max-width:240px">Connect Appeals</button>
     </div>`;
   }
 
