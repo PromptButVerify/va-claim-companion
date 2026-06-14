@@ -9,7 +9,7 @@ const CFG = {
   CLIENT_CLAIMS:  '0oa1bscwxlbnLr2Tk2p8',
   SCOPE_CLAIMS:   'claim.read',
 
-  // Appeals AP
+  // Appeals API
   AUTH_APPEALS:   'https://sandbox-api.va.gov/oauth2/appeals/v1/authorization',
   CLIENT_APPEALS: '0oa1bsd19oocoLYY32p8',
   SCOPE_APPEALS:  'appeals.read',
@@ -73,6 +73,7 @@ function generateState() {
 }
 
 // ─── Token storage ───────────────────────────────────────────────────────────
+// localStorage (not sessionStorage) — survives iOS in-app browser OAuth redirects
 function saveToken(api, token, expiresIn) {
   localStorage.setItem(`va_token_${api}`, token);
   localStorage.setItem(`va_token_${api}_exp`, Date.now() + (expiresIn - 60) * 1000);
@@ -172,27 +173,32 @@ async function handleCallback() {
 
     const data = await resp.json();
     saveToken(api, data.access_token, data.expires_in || 3600);
+
     if (api === 'claims') {
       S.tokenClaims = data.access_token;
-        if (!loadToken('appeals')) {
-          document.getElementById('app').innerHTML =
-            '<div class="screen-loading">' +
-            '<div class="brand-mark"></div>' +
-            '<div class="brand-name">VA Claim Companion</div>' +
-            '<p style="font-size:14px;color:var(--text-muted);margin-top:8px;text-align:center;max-width:260px;line-height:1.5">' +
-            'Step 2 of 2 — authorizing your appeals records' +
-            '</p>' +
-            '<div class="spinner" style="margin-top:16px"></div>' +
-            '</div>';
-          await new Promise(r => setTimeout(r, 1000));
-          await startAuth('appeals');
-          return;
-        }
-      } else {
+
+      // Auto-chain to Appeals if not yet authorized.
+      // VA Claims and VA Appeals share the same Okta IdP, so the veteran
+      // won't be prompted for credentials again — just a brief redirect.
+      if (!loadToken('appeals')) {
+        document.getElementById('app').innerHTML = `
+          <div class="screen-loading">
+            <div class="brand-mark"></div>
+            <div class="brand-name">VA Claim Companion</div>
+            <div class="spinner"></div>
+            <div style="font-size:var(--font-size-body-sm);color:var(--color-base-dark);text-align:center;margin-top:8px">
+              Step 2 of 2 &mdash; Connecting Appeals&hellip;
+            </div>
+          </div>`;
+        await new Promise(r => setTimeout(r, 700));
+        await startAuth('appeals');
+        return;
+      }
+    } else {
       S.tokenAppeals = data.access_token;
-      S.appeals = []; // Mark appeals as connected; fetchData will populate with real data
     }
 
+    // Both tokens in hand — fetch everything
     await fetchData();
   } catch (err) {
     console.error('[handleCallback] error:', err.message, err);
@@ -250,6 +256,7 @@ async function fetchData() {
     S.loading = false;
     render();
 
+    // Kick off interpretations for all claims (non-blocking)
     if (S.claims?.length) {
       S.claims.forEach(c => interpretClaim(c));
     }
@@ -285,13 +292,14 @@ async function interpretClaim(claim) {
       S.interpretations[id] = d.interpretation;
     }
   } catch (_) {
+    // Silent fail — interpretation is a nice-to-have
   } finally {
     S.interpretLoading[id] = false;
     renderInterpret(id);
   }
 }
 
-// ─── Status mapping ─────────────────────────────────────────────────────────
+// ─── Status mapping ──────────────────────────────────────────────────────────
 function getStatusClass(status) {
   if (!status) return 'pending';
   const s = status.toLowerCase();
@@ -441,7 +449,7 @@ function appealCard(appeal) {
           ${pill(status)}
         </div>
         <div class="claim-id">Appeal #${escHtml(id)}</div>
-        ${desc ? `<div style="font-size:13px;color:var(--text-muted);margin-top:6px">${escHtml(desc)}</div>` : ''}
+        ${desc ? `<div style="font-size:var(--font-size-body-sm);color:var(--color-base-dark);margin-top:6px;line-height:1.5">${escHtml(desc)}</div>` : ''}
       </div>
     </div>`;
 }
@@ -454,6 +462,7 @@ function escHtml(s) {
     .replace(/"/g, '&quot;');
 }
 
+// ─── Render interpret in-place ────────────────────────────────────────────────
 function renderInterpret(id) {
   const card = document.querySelector(`[data-claim-id="${id}"]`);
   if (!card) return;
@@ -485,6 +494,7 @@ function renderInterpret(id) {
   }
 }
 
+// ─── Main render ─────────────────────────────────────────────────────────────
 function render() {
   const app = document.getElementById('app');
   const token = S.tokenClaims || loadToken('claims');
@@ -601,17 +611,19 @@ function renderAppeals() {
   const appeals = S.appeals;
 
   if (!appeals) {
+    // Shouldn't normally show — auto-chain handles Appeals auth on first login.
+    // Shown as fallback if appeals token expired independently.
     return `<div class="empty">
       <div class="empty-icon">${ICONS.appeals}</div>
       <div class="empty-title">Appeals not connected</div>
-      <div class="empty-sub">Your claims are loaded. Connect Appeals to see Board appeals separately.</div>
-      <button class="btn btn-primary" id="btn-connect-appeals" style="margin-top:20px;max-width:240px">Connect Appeals</button>
+      <div class="empty-sub">Your Appeals session has expired. Reconnect to view your appeal status.</div>
+      <button class="btn btn-ghost" id="btn-connect-appeals" style="margin-top:var(--sp-2);max-width:240px">Connect Appeals</button>
     </div>`;
   }
 
   if (!appeals.length) {
     return `<div class="empty">
-      <div class="empty-icon">${ICONS.appeals}</div>
+      <div class="empty-icon">${ICOMS	appeals}</div>
       <div class="empty-title">No appeals on file</div>
       <div class="empty-sub">You don't have any active appeals with the Board</div>
     </div>`;
@@ -675,7 +687,9 @@ function renderSkeleton() {
     </div>`).join('');
 }
 
+// ─── Event handlers ──────────────────────────────────────────────────────────
 function attachDashboardHandlers() {
+  // Tab switching
   document.querySelectorAll('.nav-item[data-tab]').forEach(btn => {
     btn.addEventListener('click', () => {
       S.tab = btn.dataset.tab;
@@ -683,12 +697,15 @@ function attachDashboardHandlers() {
     });
   });
 
+  // Refresh
   const doRefresh = () => fetchData();
   document.getElementById('btn-refresh')?.addEventListener('click', doRefresh);
   document.getElementById('btn-refresh-inline')?.addEventListener('click', doRefresh);
 
+  // Connect Appeals
   document.getElementById('btn-connect-appeals')?.addEventListener('click', () => startAuth('appeals'));
 
+  // Sign out
   document.getElementById('btn-signout')?.addEventListener('click', () => {
     clearTokens();
     S.tokenClaims = null;
@@ -701,26 +718,32 @@ function attachDashboardHandlers() {
   });
 }
 
+// ─── Init ────────────────────────────────────────────────────────────────────
 async function init() {
+  // Register service worker
   if ('serviceWorker' in navigator) {
     navigator.serviceWorker.register('/sw.js').catch(() => {});
   }
 
+  // Check for OAuth callback
   const params = new URLSearchParams(window.location.search);
   if (params.has('code')) {
     await handleCallback();
     return;
   }
 
+  // Check for OAuth error
   if (params.has('error')) {
     S.error = params.get('error_description') || params.get('error');
     window.history.replaceState({}, '', '/');
   }
 
+  // Load token from session
   S.tokenClaims = loadToken('claims');
   S.tokenAppeals = loadToken('appeals');
 
   if (S.tokenClaims) {
+    // Fetch data
     await fetchData();
   } else {
     render();
