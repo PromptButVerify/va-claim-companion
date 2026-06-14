@@ -552,7 +552,7 @@ function renderDashboard() {
       <div class="header-inner">
         <div class="va-wordmark">
           <span class="va-wordmark-letters">VA</span>
-          <span class="va-wordmark-dept">Claim<br>Companion</span>
+          <span class="va-wordmark-dept">U.S. Department<br>of Veterans Affairs</span>
         </div>
         <div style="display:flex;align-items:center;gap:var(--sp-1)">
           <span class="header-badge">Sandbox</span>

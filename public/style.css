@@ -199,11 +199,9 @@ body {
 
 .va-wordmark-dept {
   font-size: 10px;
-  font-weight: 700;
+  font-weight: 400;
   color: rgba(255, 255, 255, 0.9);
-  line-height: 1.4;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
+  line-height: 1.3;
   border-left: 1px solid rgba(255, 255, 255, 0.35);
   padding-left: 10px;
 }
@@ -282,7 +280,7 @@ body {
   gap: var(--sp-1);
   padding: 10px 24px;
   font-family: inherit;
-  font-size: 1rem;         /* 16px — VADS button default */
+  font-size: var(--font-size-body-md);  /* 17px — VADS button default */
   font-weight: 700;
   line-height: 1;
   border-radius: var(--radius);
