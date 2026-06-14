@@ -85,3 +85,731 @@
   --safe-top:    env(safe-area-inset-top, 0px);
   --safe-bottom: env(safe-area-inset-bottom, 0px);
 }
+
+/* ─── Base ──────────────────────────────────────────────────────────────── */
+html, body { height: 100%; }
+
+body {
+  background: var(--color-base-lightest);
+  color: var(--color-base);
+  /* VADS font stack: design.va.gov/foundation/typography */
+  font-family: 'Source Sans Pro', 'Helvetica Neue', Helvetica, Roboto, Arial, sans-serif;
+  font-size: var(--font-size-body-md);   /* 17px — VADS body default */
+  line-height: var(--line-h-body);
+  -webkit-font-smoothing: antialiased;
+  overscroll-behavior: none;
+}
+
+#app {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+}
+
+/* ─── Loading Screen ────────────────────────────────────────────────────── */
+.screen-loading {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--sp-3);
+  background: var(--color-white);
+  padding: var(--sp-4);
+  text-align: center;
+}
+
+/* Star / shield wordmark — using VA-style polygon */
+.brand-mark {
+  width: 52px;
+  height: 52px;
+  background: var(--color-primary-darker);
+  clip-path: polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%);
+  flex-shrink: 0;
+}
+
+.brand-name {
+  font-size: var(--font-size-h3);   /* 20px */
+  font-weight: 700;
+  color: var(--color-base);
+}
+
+/* ─── Loading Indicator — VADS Loading indicator pattern ────────────────── */
+.spinner {
+  width: 24px;
+  height: 24px;
+  border: 3px solid var(--color-base-lighter);
+  border-top-color: var(--color-primary);
+  border-radius: 50%;
+  animation: spin 0.75s linear infinite;
+  flex-shrink: 0;
+}
+
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* ─── Login Screen ──────────────────────────────────────────────────────── */
+.screen-login {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: var(--sp-4) var(--sp-3);
+  background: var(--color-white);
+  text-align: center;
+  gap: var(--sp-2);
+}
+
+.login-mark {
+  width: 60px;
+  height: 60px;
+  background: var(--color-primary-darker);
+  clip-path: polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%);
+  margin-bottom: var(--sp-1);
+  flex-shrink: 0;
+}
+
+.login-title {
+  font-size: var(--font-size-h2);   /* 32px */
+  font-weight: 700;
+  color: var(--color-base);
+  line-height: var(--line-h-heading);
+}
+
+.login-sub {
+  /* VADS va-introtext pattern — slightly larger lead text */
+  font-size: var(--font-size-body-lg);  /* 20px */
+  color: var(--color-base);
+  line-height: var(--line-h-body);
+  max-width: 320px;
+}
+
+.login-note {
+  font-size: var(--font-size-body-sm);  /* 15px */
+  color: var(--color-base-dark);
+  max-width: 280px;
+  line-height: var(--line-h-body);
+}
+
+/* ─── Sandbox Banner — VADS Warning Alert ───────────────────────────────── */
+.sandbox-banner {
+  background: var(--color-warning-lighter);   /* #faf3d1 */
+  border-left: 4px solid var(--color-warning); /* #ffbe2e */
+  padding: var(--sp-1) var(--sp-2);
+  font-size: var(--font-size-body-sm);         /* 15px */
+  font-weight: 700;
+  color: var(--color-base);
+  text-align: left;
+  width: 100%;
+  max-width: 360px;
+  border-radius: 0 var(--radius) var(--radius) 0;
+}
+
+/* ─── Buttons — VADS Button component ──────────────────────────────────── */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--sp-1);
+  padding: 10px 24px;
+  font-family: inherit;
+  font-size: 1rem;         /* 16px — VADS button default */
+  font-weight: 700;
+  line-height: 1;
+  border-radius: var(--radius);
+  border: 2px solid transparent;
+  cursor: pointer;
+  text-decoration: none;
+  transition: background 0.1s, color 0.1s, border-color 0.1s;
+  width: 100%;
+  max-width: 360px;
+  text-align: center;
+}
+
+/* Primary — vads-button-color-background-primary-on-light */
+.btn-primary {
+  background: var(--color-primary);       /* #005ea2 */
+  color: var(--color-white);
+  border-color: transparent;
+}
+.btn-primary:hover {
+  background: var(--color-primary-dark);  /* #1a4480 */
+}
+.btn-primary:active {
+  background: var(--color-primary-darker); /* #162e51 */
+}
+
+/* Secondary (outline) */
+.btn-secondary {
+  background: var(--color-white);
+  color: var(--color-primary);
+  border-color: var(--color-primary);
+}
+.btn-secondary:hover {
+  background: var(--color-primary-lighter);
+  border-color: var(--color-primary-dark);
+  color: var(--color-primary-dark);
+}
+.btn-secondary:active {
+  background: var(--color-primary-lighter);
+  border-color: var(--color-primary-darker);
+  color: var(--color-primary-darker);
+}
+
+/* Ghost — for smaller secondary actions */
+.btn-ghost {
+  background: transparent;
+  color: var(--color-primary);
+  border-color: var(--color-primary);
+  font-size: var(--font-size-body-sm);
+  padding: 8px 16px;
+}
+.btn-ghost:hover { background: var(--color-primary-lighter); }
+.btn-ghost:active { background: var(--color-primary-lighter); }
+
+/* Icon-only button (header toolbar) */
+.icon-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  background: transparent;
+  border: none;
+  border-radius: var(--radius);
+  cursor: pointer;
+  color: var(--color-white);
+  padding: 0;
+  flex-shrink: 0;
+}
+.icon-btn:hover  { background: rgba(255,255,255,0.12); }
+.icon-btn:active { background: rgba(255,255,255,0.2); }
++.icon-btn svg {
+  width: 20px;
+  height: 20px;
+  stroke-width: 1.75;
+}
+
+/* ─── Header — VADS Header (dark variant) ────────────────────────────────── */
+.header {
+  background: var(--color-primary-darker);  /* #162e51 */
+  color: var(--color-white);
+  height: calc(var(--header-h) + var(--safe-top));
+  padding-top: var(--safe-top);
+  flex-shrink: 0;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  /* VADS header has a 4px accent bottom border in primary blue */
+  border-bottom: 4px solid var(--color-primary);
+}
+
+.header-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 var(--sp-2);
+  height: var(--header-h);
+}
+
+.header-title {
+  font-size: var(--font-size-body-md);  /* 17px */
+  font-weight: 700;
+  color: var(--color-white);
+  letter-spacing: 0.01em;
+  display: flex;
+  align-items: center;
+  gap: var(--sp-1);
+}
+
+/* Sandbox environment badge */
+.header-badge {
+  display: inline-block;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  background: var(--color-warning);  /* #ffbe2e — VADS warning */
+  color: var(--color-base);
+  padding: 2px 6px;
+  border-radius: 2px;
+  line-height: 1.4;
+}
+
+/* ─── Navigation — bottom tab bar ────────────────────────────────────────── */
+.nav {
+  display: flex;
+  background: var(--color-white);
+  border-top: 1px solid var(--color-base-lighter);
+  height: calc(var(--nav-h) + var(--safe-bottom));
+  padding-bottom: var(--safe-bottom);
+  flex-shrink: 0;
+  position: sticky;
+  bottom: 0;
+  z-index: 100;
+}
+
+.nav-item {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 3px;
+  background: none;
+  border: none;
+  /* VADS tab active state: 4px top border in primary */
+  border-top: 4px solid transparent;
+  cursor: pointer;
+  font-family: inherit;
+  font-size: var(--font-size-body-sm);  /* 15px */
+  font-weight: 400;
+  color: var(--color-base-dark);
+  padding: 6px 4px;
+  transition: color 0.1s, border-color 0.1s;
+  line-height: 1.2;
+}
+
+.inav-item svg {
+  width: 20px;
+  height: 20px;
+  stroke-width: 1.5;
+}
+ .nav-item.active {
+  color: var(--color-primary);
+  border-top-color: var(--color-primary);
+  font-weight: 700;
+}
+
+.nav-item:hover:not(.active) {
+  color: var(--color-primary-dark);
+  background: var(--color-primary-lighter);
+}
+
+/* ─── Content Area ──────────────────────────────────────────────────────── */
+.content {
+  flex: 1;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  padding: var(--sp-2) var(--sp-2) var(--sp-3);
+}
+
+/* ─── Section Headers ───────────────────────────────────────────────────── */
+.section-hd {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: var(--sp-2);
+  padding-bottom: var(--sp-1);
+  border-bottom: 1px solid var(--color-base-lighter);
+}
+
+.section-title {
+  font-size: var(--font-size-h3);   /* 20px */
+  font-weight: 700;
+  color: var(--color-base);
+  line-height: var(--line-h-heading);
+}
+
+.section-count {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 24px;
+  height: 24px;
+  padding: 0 6px;
+  background: var(--color-primary-darker);
+  color: var(--color-white);
+  font-size: var(--font-size-body-sm);
+  font-weight: 700;
+  border-radius: 12px;
+}
+
+/* ─── Cards ───VADS Card component ──────────────────────────────────────── */
+/* design.va.gov/components/card
+ * Default card: white bg, 1px solid border (#757575 = vads-card-border-on-light) */
+.card {
+  background: var(--color-white);
+  border: 1px solid var(--color-gray-medium);  /* vads-card-border-on-light */
+  border-radius: var(--radius);
+  padding: var(--sp-2);
+  margin-bottom: var(--sp-2);
+}
+
+.card-top { margin-bottom: var(--sp-05); }
+
+.card-row {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--sp-1);
+  margin-bottom: 6px;
+}
+
+.claim-type {
+  font-size: var(--font-size-body-md);  /* 17px */
+  font-weight: 700;
+  color: var(--color-base);
+  line-height: var(--line-h-heading);
+  flex: 1;
+}
+
+.claim-id {
+  font-size: var(--font-size-body-sm);  /* 15px */
+  color: var(--color-base-dark);
+  line-height: 1.35;
+  margin-top: 2px;
+}
+
+/* ─── Status Tags — VADS Tag – Status component ──────────────────────────── */
+/* design.va.gov/components/tag/tag-status */
+.pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 2px 8px;
+  font-size: var(--font-size-body-sm);  /* 15px */
+  font-weight: 700;
+  border-radius: 2px;
+  border: 1px solid;
+  white-space: nowrap;
+  flex-shrink: 0;
+  line-height: 1.4;
+}
+
+.pill-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+/* Pending — gray/neutral */
+.pill.pending {
+  color: var(--color-base-dark);
+  background: var(--color-base-lightest);
+  border-color: var(--color-gray-medium);
+}
+.pill.pending .pill-dot { background: var(--color-gray-medium); }
+
+/* In progress — info (cyan) */
+.pill.progress {
+  color: var(--color-info-dark);         /* #009ec1 */
+  background: var(--color-info-lighter); /* #e7f6f8 */
+  border-color: var(--color-info);       /* #00bde3 */
+}
+.pill.progress .pill-dot { background: var(--color-info); }
+
+/* Decision pending — primary (blue) */
+.pill.decision {
+  color: var(--color-primary-dark);         /* #1a4480 */
+  background: var(--color-primary-lighter); /* #d9e8f6 */
+  border-color: var(--color-primary);       /* #005ea2 */
+}
+.pill.decision .pill-dot { background: var(--color-primary); }
+
+/* Granted / complete — success (green) */
+.pill.granted {
+  color: var(--color-success-dark);         /* #008817 */
+  background: var(--color-success-lighter); /* #ecf3ec */
+  border-color: var(--color-success);       /* #00a91c */
+}
+.pill.granted .pill-dot { background: var(--color-success); }
+
+/* Denied — error (red) */
+.pill.denied {
+  color: var(--color-error-dark);         /* #b21d38 */
+  background: var(--color-error-lighter); /* #f4e3db */
+  border-color: var(--color-error);       /* #d54309 */
+}
+ .pill.denied .pill-dot { background: var(--color-error); }
+
+/* ─── Phase Progress ─────────────────────────────────────────────────────
+ * Adapted from VADS Progress Bar (Activity) pattern */
+.phase-wrap {
+  margin: var(--sp-15) 0 var(--sp-1);
+}
+
+.phase-label {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--color-base-dark);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: 6px;
+}
+
+.phase-track {
+  display: flex;
+  gap: 3px;
+  margin-bottom: 5px;
+}
+
+.phase-seg {
+  flex: 1;
+  height: 6px;
+  background: var(--color-base-lighter);
+  border-radius: 2px;
+  transition: background 0.2s;
+}
+
+.phase-seg.done   { background: var(--color-success); }
+.phase-seg.active { background: var(--color-primary); }
+
+.phase-name {
+  font-size: var(--font-size-body-sm);  /* 15px */
+  color: var(--color-primary);
+  font-weight: 700;
+}
+
+/* ─── Contention Tags ───────────────────────────────────────────────────── */
+.tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin: var(--sp-15) 0 var(--sp-1);
+}
+
+.tag {
+  display: inline-block;
+  padding: 2px 10px;
+  background: var(--color-info-lighter);
+  border: 1px solid var(--color-info);
+  border-radius: 2px;
+  font-size: var(--font-size-body-sm);  /* 15px */
+  color: var(--color-info-dark);
+  font-weight: 600;
+  line-height: 1.4;
+}
+
+/* ─── AI Interpretation — VADS Summary Box / Additional Info style ──────
+ * Info left-border alert pattern */
+.interpret {
+  margin-top: var(--sp-2);
+  padding: var(--sp-15) var(--sp-2);
+  background: var(--color-info-lighter);  /* #e7f6f8 */
+  border-left: 4px solid var(--color-info); /* #00bde3 */
+  border-radius: 0 var(--radius) var(--radius) 0;
+}
+
+.interpret-label {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--color-base-dark);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  margin-bottom: 6px;
+}
+
+.interpret-text {
+  font-size: var(--font-size-body-sm);  /* 15px */
+  color: var(--color-base);
+  line-height: var(--line-h-body);
+}
+
+.interpret-loading {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-1);
+  font-size: var(--font-size-body-sm);
+  color: var(--color-base-dark);
+}
+
+/* ─── Alerts — VADS Alert component ─────────────────────────────────────── */
+/* design.va.gov/components/alert — left-border, semantic colors */
+.error-card {
+  background: var(--color-error-lighter);    /* #f4e3db */
+  border-left: 4px solid var(--color-error); /* #d54309 */
+  padding: var(--sp-15) var(--sp-2);
+  border-radius: 0 var(--radius) var(--radius) 0;
+  margin-bottom: var(--sp-2);
+}
+
+.error-title {
+  font-size: var(--font-size-body-md);  /* 17px */
+  font-weight: 700;
+  color: var(--color-base);
+  margin-bottom: 4px;
+}
+
+.error-msg {
+  font-size: var(--font-size-body-sm);  /* 15px */
+  color: var(--color-base);
+  line-height: var(--line-h-body);
+}
+
+/* ─── Empty States ──────────────────────────────────────────────────────── */
+.empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: var(--sp-6) var(--sp-3);
+  gap: var(--sp-2);
+}
+ .empty-icon {
+  width: 48px;
+  height: 48px;
+  color: var(--color-base-light);
+}
+.empty-icon svg {
+  width: 100%;
+  height: 100%;
+  stroke-width: 1.25;
+}
+
+.empty-title {
+  font-size: var(--font-size-h3);  /* 20px */
+  font-weight: 700;
+  color: var(--color-base);
+}
+
+.empty-sub {
+  font-size: var(--font-size-body-md);  /* 17px */
+  color: var(--color-base-dark);
+  max-width: 280px;
+  line-height: var(--line-h-body);
+}
+
+/* ─── Skeleton Loading ───────────────────────────────────────────────────── */
+@keyframes shimmer {
+  0%h{ background-position: -200% 0; }
+  100% { background-position:  200% 0; }
+}
+
+.skeleton {
+  background: linear-gradient(
+    90deg,
+    var(--color-base-lighter) 25%,
+    var(--color-base-lightest) 50%,
+    var(--color-base-lighter) 75%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.4s ease-in-out infinite;
+  border-radius: var(--radius);
+}
+ .skel-card {
+  background: var(--color-white);
+  border: 1px solid var(--color-gray-medium);
+  border-radius: var(--radius);
+  padding: var(--sp-2);
+  margin-bottom: var(--sp-2);
+}
+
+.skel-line {
+  height: 15px;
+  margin-bottom: var(--sp-1);
+}
+
+/* ─── Last Updated / Refresh ────────────────────────────────────────────── */
+.last-upd {
+  font-size: var(--font-size-body-sm);
+  color: var(--color-base-dark);
+  text-align: center;
+  padding: var(--sp-1) 0;
+}
+
+.refresh-wrap {
+  display: flex;
+  justify-content: center;
+  padding: var(--sp-05) 0 var(--sp-2);
+}
+
+/* VADS Link - Action pattern for refresh */
+.refresh-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: none;
+  border: none;
+  font-family: inherit;
+  font-size: var(--font-size-body-sm);  /* 15px */
+  font-weight: 700;
+  color: var(--color-primary);
+  cursor: pointer;
+  padding: 8px 12px;
+  border-radius: var(--radius);
+  text-decoration: underline;
+  text-decoration-color: transparent;
+}
+.refresh-btn:hover {
+  background: var(--color-primary-lighter);
+  text-decoration-color: var(--color-primary);
+}
+.refresh-btn svg {
+  width: 14px;
+  height: 14px;
+  stroke-width: 2;
+}
+
+/* ─── Settings ───────────────────────────────────────────────────────────── */
+.settings-section {
+  margin-bottom: var(--sp-3);
+}
+
+.settings-group {
+  background: var(--color-white);
+  border: 1px solid var(--color-base-lighter);
+  border-radius: var(--radius);
+  overflow: hidden;
+}
+
+.settings-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--sp-15) var(--sp-2);
+  border-bottom: 1px solid var(--color-base-lighter);
+  gap: var(--sp-2);
+}
+.settings-row:last-child { border-bottom: none; }
+
+.settings-row-label {
+  font-size: var(--font-size-body-md);  /* 17px */
+  color: var(--color-base);
+}
+
+.settings-row-val {
+  font-size: var(--font-size-body-sm);  /* 15px */
+  color: var(--color-base-dark);
+  text-align: right;
+}
+
+.settings-sub {
+  font-size: var(--font-size-body-sm);
+  color: var(--color-base-dark);
+  padding: var(--sp-1) 0 0;
+  line-height: var(--line-h-body);
+}
+
+/* Danger zone — sign out row */
+.settings-danger .settings-row {
+  cursor: pointer;
+  transition: background 0.1s;
+}
+.settings-danger .settings-row:hover  { background: var(--color-error-lighter); }
+.settings-danger .settings-row:active { background: var(--color-error-lighter); }
+
+.settings-danger .settings-row-label {
+  color: var(--color-error);          /* #d54309 */
+  font-weight: 700;
+}
+
+/* ─── Responsive (medium screens) ──────────────────────────────────────── */
+@media (min-width: 481px) {
+  /* VADS medium-screen breakpoint */
+  .content {
+    padding: var(--sp-3) var(--sp-3) var(--sp-4);
+  }
+
+  .card {
+    padding: var(--sp-3);
+  }
+
+  .btn,
+  .sandbox-banner {
+    max-width: 400px;
+  }
+}
