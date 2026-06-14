@@ -174,6 +174,20 @@ async function handleCallback() {
     saveToken(api, data.access_token, data.expires_in || 3600);
     if (api === 'claims') {
       S.tokenClaims = data.access_token;
+        if (!loadToken('appeals')) {
+          document.getElementById('app').innerHTML =
+            '<div class="screen-loading">' +
+            '<div class="brand-mark"></div>' +
+            '<div class="brand-name">VA Claim Companion</div>' +
+            '<p style="font-size:14px;color:var(--text-muted);margin-top:8px;text-align:center;max-width:260px;line-height:1.5">' +
+            'Step 2 of 2 — authorizing your appeals records' +
+            '</p>' +
+            '<div class="spinner" style="margin-top:16px"></div>' +
+            '</div>';
+          await new Promise(r => setTimeout(r, 1000));
+          await startAuth('appeals');
+          return;
+        }
       } else {
       S.tokenAppeals = data.access_token;
       S.appeals = []; // Mark appeals as connected; fetchData will populate with real data
