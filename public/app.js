@@ -172,8 +172,24 @@ async function handleCallback() {
 
     const data = await resp.json();
     saveToken(api, data.access_token, data.expires_in || 3600);
-    if (api === 'claims') S.tokenClaims = data.access_token;
-    else S.tokenAppeals = data.access_token;
+    if (api === 'claims') {
+      S.tokenClaims = data.access_token;
+      // Auto-chain: start Appeals OAuth immediately after Claims succeeds
+      if (!loadToken('appeals')) {
+        document.getElementById('app').innerHTML = `
+          <div class="screen-login">
+            <div class="login-mark"></div>
+            <div class="login-title">VA Claim Companion</div>
+            <div class="login-sub">One more step — connecting your appeals data...</div>
+            <div class="spinner" style="margin:32px auto"></div>
+          </div>`;
+        await new Promise(r => setTimeout(r, 800));
+        await startAuth('appeals');
+        return;
+      }
+    } else {
+      S.tokenAppeals = data.access_token;
+    }
 
     await fetchData();
   } catch (err) {
@@ -585,10 +601,9 @@ function renderAppeals() {
   if (!appeals) {
     return `<div class="empty">
       <div class="empty-icon">${ICONS.appeals}</div>
-      <div class="empty-title">No appeals loaded</div>
-      <div class="empty-sub">
-        <button class="btn btn-ghost" id="btn-connect-appeals" style="margin-top:16px;max-width:220px;font-size:13px;padding:10px 16px">Connect Appeals API</button>
-      </div>
+      <div class="empty-title">Appeals not connected</div>
+      <div class="empty-sub">Your claims loaded. Sign in to also view your VA appeals status.</div>
+      <button class="btn btn-primary" id="btn-connect-appeals" style="margin-top:20px;max-width:240px">Sign in for Appeals</button>
     </div>`;
   }
 
