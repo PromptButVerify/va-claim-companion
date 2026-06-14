@@ -38,9 +38,8 @@ export async function onRequestPost(context) {
     : (env.APPEALS_CLIENT_ID || '0oa1bsd19oocoLYY32p8');
 
   const redirectUri = env.REDIRECT_URI || 'https://va-claim-companion.pages.dev/callback';
-  const clientSecret = api === 'claims' ? env.VA_CLIENT_SECRET_CLAIMS : env.VA_CLIENT_SECRET_APPEALS;
 
-  // Build token request
+  // Build token request — VA sandbox apps are public PKCE clients; no client_secret
   const params = new URLSearchParams({
     grant_type: 'authorization_code',
     code,
@@ -48,11 +47,6 @@ export async function onRequestPost(context) {
     client_id: clientId,
     redirect_uri: redirectUri,
   });
-
-  // Include client_secret if available (VA may require it even with PKCE)
-  if (clientSecret) {
-    params.set('client_secret', clientSecret);
-  }
 
   try {
     const resp = await fetch(tokenUrl, {
