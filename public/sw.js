@@ -1,5 +1,5 @@
 // VA Claim Companion — Service Worker
-const CACHE = 'va-claim-companion-v1';
+const CACHE = 'va-claim-companion-v2';
 const STATIC = ['/', '/app.js', '/style.css', '/manifest.json'];
 
 self.addEventListener('install', e => {
