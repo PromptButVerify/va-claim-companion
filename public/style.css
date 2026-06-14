@@ -2,7 +2,7 @@
  * design.va.gov · Source Sans Pro · VADS color tokens · VADS components
  * Mobile-first PWA layout */
 
-@import url('https://fonts.googleapis.com/css2?family=Source+Sans+3:ital,wght@0,400;0,600;0,700;1,400&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Bitter:wght@700&family=Source+Sans+3:ital,wght@0,400;0,600;0,700;1,400&display=swap');
 
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -86,7 +86,7 @@
   --safe-bottom: env(safe-area-inset-bottom, 0px);
 }
 
-/* ─── Base ──────────────────────────────────────────────────────────────── */
+/* ─── Base ──────────────────────────────────────────────────────────────────── */
 html, body { height: 100%; }
 
 body {
@@ -107,7 +107,7 @@ body {
   position: relative;
 }
 
-/* ─── Loading Screen ────────────────────────────────────────────────────── */
+/* ─── Loading Screen ────────────────────────────────────────────────────────── */
 .screen-loading {
   flex: 1;
   display: flex;
@@ -120,19 +120,34 @@ body {
   text-align: center;
 }
 
-/* Star / shield wordmark — using VA-style polygon */
+/* VA wordmark block — loading/splash screen mark */
 .brand-mark {
-  width: 52px;
-  height: 52px;
+  width: 72px;
+  height: 60px;
   background: var(--color-primary-darker);
-  clip-path: polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%);
+  border-radius: var(--radius);
+  display: flex;
+  align-items: center;
+  justify-content: center;
   flex-shrink: 0;
 }
 
-.brand-name {
-  font-size: var(--font-size-h3);   /* 20px */
+.brand-mark::after {
+  content: 'VA';
+  font-family: 'Bitter', Georgia, 'Times New Roman', serif;
+  font-size: 34px;
   font-weight: 700;
-  color: var(--color-base);
+  color: var(--color-white);
+  line-height: 1;
+  letter-spacing: -0.5px;
+}
+
+.brand-name {
+  font-size: var(--font-size-body-sm);   /* 15px */
+  font-weight: 700;
+  color: var(--color-base-dark);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
 }
 
 /* ─── Loading Indicator — VADS Loading indicator pattern ────────────────── */
@@ -148,40 +163,93 @@ body {
 
 @keyframes spin { to { transform: rotate(360deg); } }
 
-/* ─── Login Screen ──────────────────────────────────────────────────────── */
+/* ─── Official Government Banner ─────────────────────────────────────────── */
+/* VADS Banner - Official Gov — design.va.gov/components/banner/official-gov  */
+.gov-banner {
+  background: #f0f0f0;
+  border-bottom: 1px solid #c9c9c9;
+  padding: 5px var(--sp-2);
+  font-size: 12px;
+  color: var(--color-base);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-shrink: 0;
+  line-height: 1.4;
+}
+
+/* ─── VA Wordmark ────────────────────────────────────────────────────────── */
+/* "VA" in Bitter (VADS serif font) + department/tool name                    */
+/* Matches the VA.gov identity system: design.va.gov/foundation/logos          */
+.va-wordmark {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-shrink: 0;
+}
+
+.va-wordmark-letters {
+  font-family: 'Bitter', Georgia, 'Times New Roman', serif;
+  font-size: 30px;
+  font-weight: 700;
+  color: var(--color-white);
+  line-height: 1;
+  letter-spacing: -0.5px;
+}
+
+.va-wordmark-dept {
+  font-size: 10px;
+  font-weight: 700;
+  color: rgba(255, 255, 255, 0.9);
+  line-height: 1.4;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  border-left: 1px solid rgba(255, 255, 255, 0.35);
+  padding-left: 10px;
+}
+
+/* ─── Login Screen ─────────────────────────────────────────────────────────── */
 .screen-login {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  background: var(--color-white);
+}
+
+/* Login page VA header — same dark bar as dashboard header */
+.login-header {
+  background: var(--color-primary-darker);
+  border-bottom: 4px solid var(--color-primary);
+  padding: var(--sp-2) var(--sp-2);
+  flex-shrink: 0;
+}
+
+/* Content well — centered, generous padding */
+.login-content {
   flex: 1;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: var(--sp-4) var(--sp-3);
-  background: var(--color-white);
+  padding: var(--sp-5) var(--sp-3) var(--sp-4);
   text-align: center;
   gap: var(--sp-2);
 }
 
-.login-mark {
-  width: 60px;
-  height: 60px;
-  background: var(--color-primary-darker);
-  clip-path: polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%);
-  margin-bottom: var(--sp-1);
-  flex-shrink: 0;
-}
+/* .login-mark removed — replaced by VA wordmark in .login-header */
 
 .login-title {
-  font-size: var(--font-size-h2);   /* 32px */
+  font-size: var(--font-size-h1);   /* 40px — VADS vads-font-size-heading-level-1 */
   font-weight: 700;
   color: var(--color-base);
   line-height: var(--line-h-heading);
 }
 
 .login-sub {
-  /* VADS va-introtext pattern — slightly larger lead text */
+  /* VADS va-introtext / lead paragraph pattern */
   font-size: var(--font-size-body-lg);  /* 20px */
   color: var(--color-base);
-  line-height: var(--line-h-body);
+  line-height: var(--line-h-lead);      /* 1.75 */
   max-width: 320px;
 }
 
@@ -192,7 +260,7 @@ body {
   line-height: var(--line-h-body);
 }
 
-/* ─── Sandbox Banner — VADS Warning Alert ───────────────────────────────── */
+/* ─── Sandbox Banner — VADS Warning Alert ─────────────────────────────────── */
 .sandbox-banner {
   background: var(--color-warning-lighter);   /* #faf3d1 */
   border-left: 4px solid var(--color-warning); /* #ffbe2e */
@@ -206,7 +274,7 @@ body {
   border-radius: 0 var(--radius) var(--radius) 0;
 }
 
-/* ─── Buttons — VADS Button component ──────────────────────────────────── */
+/* ─── Buttons — VADS Button component ─────────────────────────────────────── */
 .btn {
   display: inline-flex;
   align-items: center;
@@ -291,7 +359,7 @@ body {
   stroke-width: 1.75;
 }
 
-/* ─── Header — VADS Header (dark variant) ───────────────────────────────── */
+/* ─── Header — VADS Header (dark variant) ────────────────────────────────── */
 .header {
   background: var(--color-primary-darker);  /* #162e51 */
   color: var(--color-white);
@@ -337,7 +405,7 @@ body {
   line-height: 1.4;
 }
 
-/* ─── Navigation — bottom tab bar ───────────────────────────────────────── */
+/* ─── Navigation — bottom tab bar ──────────────────────────────────────────── */
 .nav {
   display: flex;
   background: var(--color-white);
@@ -388,7 +456,7 @@ body {
   background: var(--color-primary-lighter);
 }
 
-/* ─── Content Area ──────────────────────────────────────────────────────── */
+/* ─── Content Area ──────────────────────────────────────────────────────────── */
 .content {
   flex: 1;
   overflow-y: auto;
@@ -396,7 +464,7 @@ body {
   padding: var(--sp-2) var(--sp-2) var(--sp-3);
 }
 
-/* ─── Section Headers ───────────────────────────────────────────────────── */
+/* ─── Section Headers ───────────────────────────────────────────────────────── */
 .section-hd {
   display: flex;
   align-items: center;
@@ -427,7 +495,7 @@ body {
   border-radius: 12px;
 }
 
-/* ─── Cards — VADS Card component ──────────────────────────────────────── */
+/* ─── Cards — VADS Card component ──────────────────────────────────────────── */
 /* design.va.gov/components/card
  * Default card: white bg, 1px solid border (#757575 = vads-card-border-on-light) */
 .card {
@@ -463,7 +531,7 @@ body {
   margin-top: 2px;
 }
 
-/* ─── Status Tags — VADS Tag – Status component ─────────────────────────── */
+/* ─── Status Tags — VADS Tag – Status component ──────────────────────────── */
 /* design.va.gov/components/tag/tag-status */
 .pill {
   display: inline-flex;
@@ -526,7 +594,7 @@ body {
 }
 .pill.denied .pill-dot { background: var(--color-error); }
 
-/* ─── Phase Progress ─────────────────────────────────────────────────────
+/* ─── Phase Progress ──────────────────────────────────────────────────────────
  * Adapted from VADS Progress Bar (Activity) pattern */
 .phase-wrap {
   margin: var(--sp-15) 0 var(--sp-1);
@@ -564,7 +632,7 @@ body {
   font-weight: 700;
 }
 
-/* ─── Contention Tags ───────────────────────────────────────────────────── */
+/* ─── Contention Tags ───────────────────────────────────────────────────────── */
 .tags {
   display: flex;
   flex-wrap: wrap;
@@ -617,7 +685,7 @@ body {
   color: var(--color-base-dark);
 }
 
-/* ─── Alerts — VADS Alert component ─────────────────────────────────────── */
+/* ─── Alerts — VADS Alert component ────────────────────────────────────────── */
 /* design.va.gov/components/alert — left-border, semantic colors */
 .error-card {
   background: var(--color-error-lighter);    /* #f4e3db */
@@ -640,7 +708,7 @@ body {
   line-height: var(--line-h-body);
 }
 
-/* ─── Empty States ──────────────────────────────────────────────────────── */
+/* ─── Empty States ──────────────────────────────────────────────────────────── */
 .empty {
   display: flex;
   flex-direction: column;
@@ -675,7 +743,7 @@ body {
   line-height: var(--line-h-body);
 }
 
-/* ─── Skeleton Loading ───────────────────────────────────────────────────── */
+/* ─── Skeleton Loading ──────────────────────────────────────────────────────── */
 @keyframes shimmer {
   0%   { background-position: -200% 0; }
   100% { background-position:  200% 0; }
@@ -706,7 +774,7 @@ body {
   margin-bottom: var(--sp-1);
 }
 
-/* ─── Last Updated / Refresh ────────────────────────────────────────────── */
+/* ─── Last Updated / Refresh ──────────────────────────────────────────────── */
 .last-upd {
   font-size: var(--font-size-body-sm);
   color: var(--color-base-dark);
@@ -747,7 +815,7 @@ body {
   stroke-width: 2;
 }
 
-/* ─── Settings ───────────────────────────────────────────────────────────── */
+/* ─── Settings ──────────────────────────────────────────────────────────────── */
 .settings-section {
   margin-bottom: var(--sp-3);
 }
@@ -800,7 +868,7 @@ body {
   font-weight: 700;
 }
 
-/* ─── Responsive (medium screens) ──────────────────────────────────────── */
+/* ─── Responsive (medium screens) ───────────────────────────────────────────── */
 @media (min-width: 481px) {
   /* VADS medium-screen breakpoint */
   .content {
