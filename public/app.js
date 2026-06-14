@@ -74,26 +74,26 @@ function generateState() {
 
 // ─── Token storage ───────────────────────────────────────────────────────────
 function saveToken(api, token, expiresIn) {
-  sessionStorage.setItem(`va_token_${api}`, token);
-  sessionStorage.setItem(`va_token_${api}_exp`, Date.now() + (expiresIn - 60) * 1000);
+  localStorage.setItem(`va_token_${api}`, token);
+  localStorage.setItem(`va_token_${api}_exp`, Date.now() + (expiresIn - 60) * 1000);
 }
 
 function loadToken(api) {
-  const token = sessionStorage.getItem(`va_token_${api}`);
-  const exp = parseInt(sessionStorage.getItem(`va_token_${api}_exp`) || '0');
+  const token = localStorage.getItem(`va_token_${api}`);
+  const exp = parseInt(localStorage.getItem(`va_token_${api}_exp`) || '0');
   if (!token || Date.now() > exp) return null;
   return token;
 }
 
 function clearTokens() {
   ['claims', 'appeals'].forEach(api => {
-    sessionStorage.removeItem(`va_token_${api}`);
-    sessionStorage.removeItem(`va_token_${api}_exp`);
+    localStorage.removeItem(`va_token_${api}`);
+    localStorage.removeItem(`va_token_${api}_exp`);
   });
-  sessionStorage.removeItem('pkce_verifier_claims');
-  sessionStorage.removeItem('pkce_state_claims');
-  sessionStorage.removeItem('pkce_verifier_appeals');
-  sessionStorage.removeItem('pkce_state_appeals');
+  localStorage.removeItem('pkce_verifier_claims');
+  localStorage.removeItem('pkce_state_claims');
+  localStorage.removeItem('pkce_verifier_appeals');
+  localStorage.removeItem('pkce_state_appeals');
 }
 
 // ─── OAuth flow ──────────────────────────────────────────────────────────────
@@ -102,8 +102,8 @@ async function startAuth(api) {
   const challenge = await generateChallenge(verifier);
   const state = generateState();
 
-  sessionStorage.setItem(`pkce_verifier_${api}`, verifier);
-  sessionStorage.setItem(`pkce_state_${api}`, state);
+  localStorage.setItem(`pkce_verifier_${api}`, verifier);
+  localStorage.setItem(`pkce_state_${api}`, state);
 
   const authBase = api === 'claims' ? CFG.AUTH_CLAIMS : CFG.AUTH_APPEALS;
   const clientId = api === 'claims' ? CFG.CLIENT_CLAIMS : CFG.CLIENT_APPEALS;
@@ -138,7 +138,7 @@ async function handleCallback() {
   // Determine which API this callback is for (check saved states)
   let api = null;
   for (const a of ['claims', 'appeals']) {
-    if (sessionStorage.getItem(`pkce_state_${a}`) === returnedState) {
+    if (localStorage.getItem(`pkce_state_${a}`) === returnedState) {
       api = a;
       break;
     }
@@ -150,9 +150,9 @@ async function handleCallback() {
     return render();
   }
 
-  const verifier = sessionStorage.getItem(`pkce_verifier_${api}`);
-  sessionStorage.removeItem(`pkce_verifier_${api}`);
-  sessionStorage.removeItem(`pkce_state_${api}`);
+  const verifier = localStorage.getItem(`pkce_verifier_${api}`);
+  localStorage.removeItem(`pkce_verifier_${api}`);
+  localStorage.removeItem(`pkce_state_${api}`);
 
   // Clean URL immediately
   window.history.replaceState({}, '', '/');
@@ -189,6 +189,7 @@ async function handleCallback() {
       }
     } else {
       S.tokenAppeals = data.access_token;
+      S.appeals = []; // Mark appeals as connected; fetchData will populate with real data
     }
 
     await fetchData();
