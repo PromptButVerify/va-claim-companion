@@ -97,7 +97,7 @@ function clearTokens() {
   localStorage.removeItem('pkce_state_appeals');
 }
 
-// ─── OAuth flow ──────────────────────────────────────────────────────────────
+// ─── OAuth flow ───────────────────────────────────────────────────────────────
 async function startAuth(api) {
   const verifier = generateVerifier();
   const challenge = await generateChallenge(verifier);
@@ -207,7 +207,7 @@ async function handleCallback() {
   }
 }
 
-// ─── API calls ───────────────────────────────────────────────────────────────
+// ─── API calls ────────────────────────────────────────────────────────────────
 async function fetchData() {
   S.loading = true;
   render();
@@ -299,7 +299,7 @@ async function interpretClaim(claim) {
   }
 }
 
-// ─── Status mapping ──────────────────────────────────────────────────────────
+// ─── Status mapping ───────────────────────────────────────────────────────────
 function getStatusClass(status) {
   if (!status) return 'pending';
   const s = status.toLowerCase();
@@ -355,7 +355,7 @@ function timeAgo(dt) {
   return `${Math.floor(diff / 86400)}d ago`;
 }
 
-// ─── SVG Icons ───────────────────────────────────────────────────────────────
+// ─── SVG Icons ────────────────────────────────────────────────────────────────
 const ICONS = {
   claims: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M9 12h6M9 16h6M9 8h3M5 4h14a1 1 0 0 1 1 1v14a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V5a1 1 0 0 1 1-1z"/></svg>`,
   appeals: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M3 6h18M3 12h18M3 18h9"/><path d="M16 16l2 2 4-4"/></svg>`,
@@ -366,7 +366,7 @@ const ICONS = {
   alert: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" xmlns="http://www.w3.org/2000/svg"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>`,
 };
 
-// ─── Render helpers ──────────────────────────────────────────────────────────
+// ─── Render helpers ───────────────────────────────────────────────────────────
 function pill(status) {
   const cls = getStatusClass(status);
   const label = getStatusLabel(status);
@@ -462,7 +462,7 @@ function escHtml(s) {
     .replace(/"/g, '&quot;');
 }
 
-// ─── Render interpret in-place ────────────────────────────────────────────────
+// ─── Render interpret in-place ────────────────────────────────────────────
 function renderInterpret(id) {
   const card = document.querySelector(`[data-claim-id="${id}"]`);
   if (!card) return;
@@ -515,13 +515,30 @@ function renderLogin() {
     : '';
   return `
     <div class="screen-login">
-      <div class="login-mark"></div>
-      <div class="login-title">VA Claim Companion</div>
-      <div class="login-sub">Track your VA benefits claims and appeals in real time — built for mobile.</div>
-      ${errorHtml}
-      <button class="btn btn-primary" id="btn-login-claims">Sign in with VA.gov</button>
-      <div class="login-note">Uses your existing VA.gov login (ID.me or Login.gov). We never store your VA credentials.</div>
-      <div class="sandbox-banner">Sandbox mode — use VA test accounts</div>
+      <div class="gov-banner">
+        <svg width="16" height="11" viewBox="0 0 16 11" aria-hidden="true" focusable="false" style="flex-shrink:0">
+          <rect width="16" height="11" fill="#fff"/>
+          <rect y="1.57" width="16" height="1.57" fill="#b22234"/>
+          <rect y="4.71" width="16" height="1.57" fill="#b22234"/>
+          <rect y="7.86" width="16" height="1.57" fill="#b22234"/>
+          <rect width="7" height="6" fill="#3c3b6e"/>
+        </svg>
+        An official website of the United States government
+      </div>
+      <div class="login-header">
+        <div class="va-wordmark">
+          <span class="va-wordmark-letters">VA</span>
+          <span class="va-wordmark-dept">U.S. Department<br>of Veterans Affairs</span>
+        </div>
+      </div>
+      <div class="login-content">
+        <h1 class="login-title">VA Claim Companion</h1>
+        <p class="login-sub">Track your VA benefits claims and appeals in real time &mdash; built for mobile.</p>
+        ${errorHtml}
+        <button class="btn btn-primary" id="btn-login-claims">Sign in with VA.gov</button>
+        <p class="login-note">Uses your existing VA.gov login (ID.me or Login.gov). We never store your VA credentials.</p>
+        <div class="sandbox-banner">Sandbox mode &mdash; use VA test accounts</div>
+      </div>
     </div>`;
 }
 
@@ -533,8 +550,14 @@ function renderDashboard() {
   const header = `
     <div class="header">
       <div class="header-inner">
-        <div class="header-title">VA Claims<span class="header-badge">Sandbox</span></div>
-        <button class="icon-btn" id="btn-refresh" title="Refresh">${ICONS.refresh}</button>
+        <div class="va-wordmark">
+          <span class="va-wordmark-letters">VA</span>
+          <span class="va-wordmark-dept">Claim<br>Companion</span>
+        </div>
+        <div style="display:flex;align-items:center;gap:var(--sp-1)">
+          <span class="header-badge">Sandbox</span>
+          <button class="icon-btn" id="btn-refresh" title="Refresh">${ICONS.refresh}</button>
+        </div>
       </div>
     </div>`;
 
@@ -623,7 +646,7 @@ function renderAppeals() {
 
   if (!appeals.length) {
     return `<div class="empty">
-      <div class="empty-icon">${ICOMS	appeals}</div>
+      <div class="empty-icon">${ICONS.appeals}</div>
       <div class="empty-title">No appeals on file</div>
       <div class="empty-sub">You don't have any active appeals with the Board</div>
     </div>`;
